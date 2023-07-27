@@ -1,6 +1,6 @@
 import { bot } from '../../index.js'
 
-const welcomeF = () => {
+export const Welcome = () => {
   bot.onText(/\/start/, msg => {
     const chatId = msg.chat.id
     bot.sendMessage(
@@ -19,33 +19,19 @@ const welcomeF = () => {
       }
     )
   })
-  bot.onText(/I wanna hire people for my project/, msg => {
-    const chatId = msg.chat.id
-    console.log('woho')
-    bot.sendMessage(chatId, 'select the type of your project', {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            //   [{text:'jhkjhk',}, 'mobile app', 'web3/dapps'],
-            //   ['design', 'illustration', 'AI'],
-            //   ['game', 'network', 'social media manager']
-            {
-              text: 'Yes',
-              callback_data: 'btn_yes'
-            },
-            {
-              text: 'No',
-              callback_data: 'btn_no'
-            }
-          ]
-        ]
-      }
-    })
-  })
 
-  bot.onText(/mobile app/, msg => {
-    console.log(msg)
+  bot.on('callback_query', async(callback_message) => {
+    console.log('callback query');
+    const title = callback_message.data.split('/')[0] //job
+    if (title == 'job') {
+      const job = callback_message.data.split('/')[1] //dapp
+      await bot.sendPhoto(
+        callback_message.from.id,
+        'https://raw.githubusercontent.com/hosein2398/node-telegram-bot-api-tutorial/master/pics/CaptionJPG.JPG',
+        { caption: 'Here we go ! \nThis is just a caption'},
+      )
+      console.log(callback_message)
+    }
   })
 }
 
-export default welcomeF

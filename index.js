@@ -1,14 +1,22 @@
 import dotenv from 'dotenv'
-dotenv.config()
+import mongoose from 'mongoose'
+import { talents } from './src/globals.js'
 import TelegramBot from 'node-telegram-bot-api'
-import welcomeF from './src/routes/welcome.js'
-
+import { Welcome } from './src/routes/welcome.js'
+import { Customer } from './src/routes/customer.js'
+dotenv.config()
 export const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
-bot.on('polling_error', console.log)
-welcomeF()
+const DB =
+  `mongodb+srv://crypto_kingpin:${process.env.MONGO_PASSWORD}@cluster0.ix2llne.mongodb.net/?retryWrites=true&w=majority`
+mongoose.set('strictQuery', false)
 
-
-
-
-// Start listening for incoming messages and commands
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log('connected')
+    bot.on('polling_error', console.log)
+    Welcome()
+    Customer()
+  })
+  .catch(error => console.log(error))
 
