@@ -21,17 +21,7 @@ export const Welcome = () => {
   })
 
   bot.on('callback_query', async(callback_message) => {
-    console.log('callback query');
-    const title = callback_message.data.split('/')[0] //job
-    if (title == 'job') {
-      const job = callback_message.data.split('/')[1] //dapp
-      await bot.sendPhoto(
-        callback_message.from.id,
-        'https://raw.githubusercontent.com/hosein2398/node-telegram-bot-api-tutorial/master/pics/CaptionJPG.JPG',
-        { caption: 'Here we go ! \nThis is just a caption'},
-      )
-      console.log(callback_message)
-    }
+
   })
 }
 
