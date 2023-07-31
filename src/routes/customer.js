@@ -1,8 +1,8 @@
 import { bot } from '../../index.js'
-import { jobs, talentCaption } from '../globals.js'
+import { jobs, sendTalents, talentCaption } from '../globals.js'
 import { Talent } from '../models/Talent.js'
 export const Customer = () => {
-  const LIMIT = 1
+  const LIMIT = 2
   let skip = LIMIT
   const getTalents = async job => {
     return await Talent.aggregate([
@@ -52,38 +52,19 @@ export const Customer = () => {
     })
   })
 
-  bot.on('callback_query', async callback_message => {
-    const title = callback_message.data.split('/')[0] //job
+  bot.on('callback_query', async msg => {
+    const title = msg.data.split('/')[0] //job
     //send the talents with this category
     if (title == 'job') {
-      const job = callback_message.data.split('/')[1] //dapp
+      const job = msg.data.split('/')[1] //dapp
 
       let talents = await getTalents(job)
-      for (const [index, talent] of talents.entries()) {
-        let category = talent.categories.find(category => category.name == job)
-        await bot.sendPhoto(callback_message.from.id, category.banner, {
-          caption: talentCaption(talent, category),
-          //sending the inline keyboard only with the last talent
-          reply_markup:
-            index == talents.length - 1
-              ? {
-                  inline_keyboard: [
-                    [
-                      {
-                        text: 'load more',
-                        callback_data: 'load_more/' + job
-                      }
-                    ]
-                  ]
-                }
-              : undefined
-        })
-      }
+      await sendTalents(talents, job, msg.from.id, bot)
     } else if (title == 'load_more') {
-      console.log('load more')
-      const job = callback_message.data.split('/')[1] //dapp
+      const job = msg.data.split('/')[1] //dapp
       let talents = await load_talents(job)
       //skipping the elements we fetched before
+      await sendTalents(talents, job, msg.from.id, bot)
       skip += LIMIT
       console.log(talents)
     }

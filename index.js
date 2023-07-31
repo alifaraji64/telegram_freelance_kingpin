@@ -5,6 +5,7 @@ import TelegramBot from 'node-telegram-bot-api'
 import { Welcome } from './src/routes/welcome.js'
 import { Customer } from './src/routes/customer.js'
 import { Talent } from './src/models/Talent.js'
+import { Freelancer } from './src/routes/freelancer.js'
 dotenv.config()
 export const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 const DB =
@@ -19,6 +20,7 @@ mongoose
     //talents[3].save().then(()=>console.log('saved'))
     Welcome()
     Customer()
+    Freelancer();
   })
   .catch(error => console.log(error))
 

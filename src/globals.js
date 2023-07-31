@@ -7,6 +7,30 @@ ${talent.firstname} \n${category.description}\n🆔 @${
   talent.rating.total / talent.rating.qty
 }/5`
 
+export const sendTalents = async(talents,job,id,bot)=>{
+  if(talents.length==0) return bot.sendMessage(id, 'no more talents to load')
+  for (const [index, talent] of talents.entries()) {
+    let category = talent.categories.find(category => category.name == job)
+    await bot.sendPhoto(id, category.banner, {
+      caption: talentCaption(talent, category),
+      //sending the inline keyboard only with the last talent
+      reply_markup:
+        index == talents.length - 1
+          ? {
+              inline_keyboard: [
+                [
+                  {
+                    text: 'load more',
+                    callback_data: 'load_more/' + job
+                  }
+                ]
+              ]
+            }
+          : undefined
+    })
+  }
+}
+
 export const jobs = [
   [
     {
@@ -48,6 +72,50 @@ export const jobs = [
     {
       text: 'social media manager',
       callback_data: 'job/social_media_manager'
+    }
+  ]
+]
+export const registeringTalents = [
+  [
+    {
+      text: 'web app',
+      callback_data: 'register_talent/web_app'
+    },
+    {
+      text: 'mobile app',
+      callback_data: 'register_talent/mobile_app'
+    },
+    {
+      text: 'web3/dapp',
+      callback_data: 'register_talent/dapp'
+    }
+  ],
+  [
+    {
+      text: 'design',
+      callback_data: 'register_talent/design'
+    },
+    {
+      text: 'illustration',
+      callback_data: 'register_talent/illustration'
+    },
+    {
+      text: 'A.I.',
+      callback_data: 'register_talent/ai'
+    }
+  ],
+  [
+    {
+      text: 'game',
+      callback_data: 'register_talent/game'
+    },
+    {
+      text: 'network',
+      callback_data: 'register_talent/network'
+    },
+    {
+      text: 'social media manager',
+      callback_data: 'register_talent/social_media_manager'
     }
   ]
 ]
