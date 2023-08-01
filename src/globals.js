@@ -1,5 +1,5 @@
+import { bot } from '../index.js'
 import { Talent } from './models/Talent.js'
-
 export const talentCaption = (talent, category) => `
 ${talent.firstname} \n${category.description}\n🆔 @${
   talent.username
@@ -7,8 +7,8 @@ ${talent.firstname} \n${category.description}\n🆔 @${
   talent.rating.total / talent.rating.qty
 }/5`
 
-export const sendTalents = async(talents,job,id,bot)=>{
-  if(talents.length==0) return bot.sendMessage(id, 'no more talents to load')
+export const sendTalents = async (talents, job, id, bot) => {
+  if (talents.length == 0) return bot.sendMessage(id, 'no more talents to load')
   for (const [index, talent] of talents.entries()) {
     let category = talent.categories.find(category => category.name == job)
     await bot.sendPhoto(id, category.banner, {
@@ -29,6 +29,28 @@ export const sendTalents = async(talents,job,id,bot)=>{
           : undefined
     })
   }
+}
+
+export const askForBanner = async chatId => {
+  return await bot.sendMessage(
+    chatId,
+    'send an image that will be the banner for this gig',
+    { reply_markup: { force_reply: true } }
+  )
+}
+export const askForDescription = async chatId => {
+  return await bot.sendMessage(
+    chatId,
+    'write a description about your service and what you offer as the talent\nmax 200 characters',
+    { reply_markup: { force_reply: true } }
+  )
+}
+export const askForPrice = async chatId => {
+  return await bot.sendMessage(
+    chatId,
+    'send me the starting price for this service',
+    { reply_markup: { force_reply: true } }
+  )
 }
 
 export const jobs = [
@@ -121,14 +143,13 @@ export const registeringTalents = [
 ]
 export const talents = [
   new Talent({
+    userId:'1',
     username: 'kingping',
     firstname: 'chris',
     rating: {
       qty: 4,
       total: 10
     },
-    image:
-      'https://pbs.twimg.com/profile_images/1562188825366892544/PvfYbkNO_400x400.jpg',
     categories: [
       {
         name: 'web_app',
@@ -140,6 +161,7 @@ export const talents = [
     ]
   }),
   new Talent({
+    userId:'2',
     username: 'eliza.eth',
     firstname: 'eliza',
     rating: {
@@ -159,6 +181,7 @@ export const talents = [
     ]
   }),
   new Talent({
+    userId:'3',
     username: 'noah.eth',
     firstname: 'noah',
     rating: {
@@ -185,10 +208,11 @@ export const talents = [
     ]
   }),
   new Talent({
+    userId:'4',
     username: 'masterjan12',
     firstname: 'masterjan',
     rating: {
-      qty: 4,
+      qty: 6,
       total: 18
     },
     image:

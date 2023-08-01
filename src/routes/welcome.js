@@ -19,9 +19,5 @@ export const Welcome = () => {
       }
     )
   })
-
-  bot.on('callback_query', async(callback_message) => {
-
-  })
 }
 
