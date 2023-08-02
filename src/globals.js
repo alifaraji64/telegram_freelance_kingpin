@@ -4,8 +4,10 @@ export const talentCaption = (talent, category) => `
 ${talent.firstname} \n${category.description}\n🆔 @${
   talent.username
 } \n💰starting price: $${category.price} \n ⭐rating: ${
-  talent.rating.total / talent.rating.qty
-}/5`
+  talent.rating.total == 0
+    ? 'no rating yet'
+    : talent.rating.total / talent.rating.qty + '/5'
+}`
 
 export const sendTalents = async (talents, job, id, bot) => {
   if (talents.length == 0) return bot.sendMessage(id, 'no more talents to load')
@@ -52,6 +54,20 @@ export const askForPrice = async chatId => {
     { reply_markup: { force_reply: true } }
   )
 }
+
+export const gigOperationsButtons = [
+  [
+    {
+      text: 'update description',
+      callback_data: 'gig/update_description'
+    },
+    { text: 'update price', callback_data: 'gig/update_price' }
+  ],
+  [
+    { text: 'update banner', callback_data: 'gig/update_banner' },
+    { text: 'delete this gig', callback_data: 'gig/delete' }
+  ]
+]
 
 export const jobs = [
   [
@@ -143,7 +159,7 @@ export const registeringTalents = [
 ]
 export const talents = [
   new Talent({
-    userId:'1',
+    userId: '1',
     username: 'kingping',
     firstname: 'chris',
     rating: {
@@ -161,7 +177,7 @@ export const talents = [
     ]
   }),
   new Talent({
-    userId:'2',
+    userId: '2',
     username: 'eliza.eth',
     firstname: 'eliza',
     rating: {
@@ -181,7 +197,7 @@ export const talents = [
     ]
   }),
   new Talent({
-    userId:'3',
+    userId: '3',
     username: 'noah.eth',
     firstname: 'noah',
     rating: {
@@ -208,7 +224,7 @@ export const talents = [
     ]
   }),
   new Talent({
-    userId:'4',
+    userId: '4',
     username: 'masterjan12',
     firstname: 'masterjan',
     rating: {
