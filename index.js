@@ -7,6 +7,7 @@ import { Customer } from './src/routes/customer.js'
 import { Talent } from './src/models/Talent.js'
 import { Freelancer } from './src/routes/freelancer.js'
 import { menuHandle } from './src/routes/globals/menu_handle.js'
+import { gigOperations } from './src/routes/freelancer/gig_operations.js'
 dotenv.config()
 export const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 const DB =
@@ -21,8 +22,9 @@ mongoose
     //talents[3].save().then(()=>console.log('saved')).catch(console.log)
     Welcome()
     Customer()
-    Freelancer();
+    Freelancer()
     menuHandle()
+    gigOperations()
   })
   .catch(error => console.log(error))
 
