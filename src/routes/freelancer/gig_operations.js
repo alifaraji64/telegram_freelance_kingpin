@@ -1,16 +1,32 @@
 import axios from 'axios'
 import { bot } from '../../../index.js'
 import { gigOperationsButtons, talentCaption } from '../../globals.js'
-import { getGigDetails, updateDescription } from './db.js'
+import {
+  deleteGig,
+  getGigDetails,
+  updateBanner,
+  updateDescription,
+  updatePrice
+} from './db.js'
 export const gigOperations = () => {
   let categoryIdToBeChanged
-  bot.onText(/./, async msg => {
+  bot.on('message', async msg => {
     const id = msg.from.id
     if (msg.reply_to_message) {
       if (msg.reply_to_message.text == 'send your new description') {
-        console.log('this is new desc ' + msg.text)
         await updateDescription(id, categoryIdToBeChanged, msg.text)
         await bot.sendMessage(id, 'description updated successfully ✅')
+      }
+      if (msg.reply_to_message.text == 'send your new price') {
+        await updatePrice(id, categoryIdToBeChanged, msg.text)
+        await bot.sendMessage(id, 'price updated successfully ✅')
+      }
+      if (msg.reply_to_message.text == 'send your new banner' && msg.photo) {
+        const largestSizePhoto = msg.photo[msg.photo.length - 1]
+        const file_id = largestSizePhoto.file_id
+        const photoURL = await bot.getFileLink(file_id)
+        await updateBanner(id, categoryIdToBeChanged, photoURL)
+        await bot.sendMessage(id, 'banner updated successfully ✅')
       }
     }
   })
@@ -26,22 +42,47 @@ export const gigOperations = () => {
           msg.from.username,
           msg.from.first_name
         )
-        const response = await axios.get(gigDetails.category.banner, {
-          responseType: 'arraybuffer'
-        })
-        await bot.sendPhoto(id, Buffer.from(response.data), {
-          caption: talentCaption(gigDetails.talent, gigDetails.category),
-          //sending the inline keyboard only with the last talent
-          reply_markup: {
-            inline_keyboard: gigOperationsButtons
+
+        const response = await axios
+          .get(gigDetails.category.banner, {
+            responseType: 'arraybuffer'
+          })
+          .catch(console.log)
+        await bot.sendPhoto(
+          id,
+          response
+            ? Buffer.from(response.data)
+            : 'https://pbs.twimg.com/profile_banners/1323316082397089793/1674081414/1080x360',
+          {
+            caption: talentCaption(gigDetails.talent, gigDetails.category),
+            //sending the inline keyboard only with the last talent
+            reply_markup: {
+              inline_keyboard: gigOperationsButtons
+            }
           }
-        })
+        )
         categoryIdToBeChanged = categoryId
       }
+      //updatng the description
       if (msg.data.split('/')[1] == 'update_description') {
         await bot.sendMessage(id, 'send your new description', {
           reply_markup: { force_reply: true }
         })
+      }
+      //updating the price
+      if (msg.data.split('/')[1] == 'update_price') {
+        await bot.sendMessage(id, 'send your new price', {
+          reply_markup: { force_reply: true }
+        })
+      }
+      if (msg.data.split('/')[1] == 'update_banner') {
+        await bot.sendMessage(id, 'send your new banner', {
+          reply_markup: { force_reply: true }
+        })
+      }
+      if (msg.data.split('/')[1] == 'delete') {
+        await deleteGig(id, categoryIdToBeChanged)
+        await bot.sendMessage(id, 'gig deleted successfully ✅')
       }
     }
   })

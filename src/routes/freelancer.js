@@ -17,7 +17,6 @@ export const Freelancer = () => {
     description: ''
   }
   bot.on('callback_query', async msg => {
-    console.log(msg)
     if (msg.data == 'register_start') {
       return await bot.sendMessage(
         msg.from.id,

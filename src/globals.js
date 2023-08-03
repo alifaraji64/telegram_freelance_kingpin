@@ -65,7 +65,7 @@ export const gigOperationsButtons = [
   ],
   [
     { text: 'update banner', callback_data: 'gig/update_banner' },
-    { text: 'delete this gig', callback_data: 'gig/delete' }
+    { text: 'X delete this gig X', callback_data: 'gig/delete' }
   ]
 ]
 

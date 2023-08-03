@@ -72,9 +72,43 @@ export const updateDescription = async (userId, categoryId, newDescription) => {
   try {
     let talent = await Talent.findOne({ userId })
     let category = talent.categories.find(c => c._id == categoryId)
-    category['description'] = newDescription;
-    await talent.save();
-    console.log('updated');
+    category['description'] = newDescription
+    await talent.save()
+    console.log('updated')
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const updatePrice = async (userId, categoryId, newPrice) => {
+  try {
+    let talent = await Talent.findOne({ userId })
+    let category = talent.categories.find(c => c._id == categoryId)
+    category['price'] = newPrice
+    await talent.save()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const updateBanner = async (userId, categoryId, newBanner) => {
+  try {
+    let talent = await Talent.findOne({ userId })
+    let category = talent.categories.find(c => c._id == categoryId)
+    category['banner'] = newBanner
+    await talent.save()
+  } catch (e) {
+    console.log(e)
+  }
+}
+export const deleteGig = async (userId, categoryId) => {
+  try {
+    let talent = await Talent.findOne({ userId })
+    let newCategories = talent.categories.filter(c => c._id != categoryId)
+    talent.categories = newCategories
+    console.log(talent)
+    console.log(newCategories)
+    await talent.save()
   } catch (e) {
     console.log(e)
   }
