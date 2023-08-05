@@ -8,10 +8,17 @@ import { Talent } from './src/models/Talent.js'
 import { Freelancer } from './src/routes/freelancer.js'
 import { menuHandle } from './src/routes/globals/menu_handle.js'
 import { gigOperations } from './src/routes/freelancer/gig_operations.js'
+import { createClient } from '@supabase/supabase-js'
+import { Web3Storage } from 'web3.storage'
 dotenv.config()
 export const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
-const DB =
-  `mongodb+srv://crypto_kingpin:${process.env.MONGO_PASSWORD}@cluster0.ix2llne.mongodb.net/?retryWrites=true&w=majority`
+export const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY,
+  { auth: { persistSession: false } }
+)
+export const web3Storage = new Web3Storage({ token: process.env.WEB3_STORAGE_TOKEN })
+const DB = `mongodb+srv://crypto_kingpin:${process.env.MONGO_PASSWORD}@cluster0.ix2llne.mongodb.net/?retryWrites=true&w=majority`
 mongoose.set('strictQuery', false)
 
 mongoose
@@ -27,4 +34,3 @@ mongoose
     gigOperations()
   })
   .catch(error => console.log(error))
-
