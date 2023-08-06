@@ -1,13 +1,13 @@
 import axios from 'axios'
-import { bot } from '../../index.js'
+import { bot } from '../../../index.js'
 import {
   askForBanner,
   askForDescription,
   askForPrice,
   registeringTalents
-} from '../globals.js'
-import { Talent } from '../models/Talent.js'
-import { bannerHandle } from './freelancer/banner_handle.js'
+} from '../../globals.js'
+import { Talent } from '../../models/Talent.js'
+import { bannerHandle } from './banner_handle.js'
 
 export const Freelancer = () => {
   let talent_details = {

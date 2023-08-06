@@ -43,17 +43,23 @@ export const myGigs = async id =>
     .select('categories.description')
     .select('categories._id')
 
-export const getGigDetails = async (gigId, userId, username, first_name) => {
-  console.log(gigId)
+export const getGigDetails = async (
+  categoryId,
+  userId,
+  username,
+  first_name
+) => {
+  console.log(categoryId)
   try {
     let data = await Talent.findOne({ userId })
       .select('categories')
       .select('rating')
-
     //this will return an array only with the category that is selected
-    let categoryData = data.categories.filter(
-      category => category._id !== gigId
-    )
+    let categoryData = data.categories.filter(category => {
+      return category._id.toString() == categoryId
+    })
+    console.log('categordata')
+    console.log(categoryData)
     // data=>{
     //   rating: { qty: 0, total: 0 },
     //   _id: new ObjectId("64c9a9486c991250ca35ab88"),

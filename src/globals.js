@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { bot } from '../index.js'
 import { Talent } from './models/Talent.js'
 export const talentCaption = (talent, category) => `
@@ -9,11 +10,23 @@ ${talent.firstname} \n${category.description}\n🆔 @${
     : talent.rating.total / talent.rating.qty + '/5'
 }`
 
+export const fetchImageFromURL = async url => {
+  console.log(url)
+  try {
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
+    return response.data
+  } catch (error) {
+    console.log(error)
+    throw new Error('Failed to fetch image from URL.')
+  }
+}
+
 export const sendTalents = async (talents, job, id, bot) => {
   if (talents.length == 0) return bot.sendMessage(id, 'no more talents to load')
   for (const [index, talent] of talents.entries()) {
     let category = talent.categories.find(category => category.name == job)
-    await bot.sendPhoto(id, category.banner, {
+    const bannerData = await fetchImageFromURL(category.banner);
+    await bot.sendPhoto(id, Buffer.from(bannerData), {
       caption: talentCaption(talent, category),
       //sending the inline keyboard only with the last talent
       reply_markup:

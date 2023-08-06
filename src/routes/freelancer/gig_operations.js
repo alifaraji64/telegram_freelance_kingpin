@@ -1,6 +1,10 @@
 import axios from 'axios'
 import { bot } from '../../../index.js'
-import { gigOperationsButtons, talentCaption } from '../../globals.js'
+import {
+  fetchImageFromURL,
+  gigOperationsButtons,
+  talentCaption
+} from '../../globals.js'
 import {
   deleteGig,
   getGigDetails,
@@ -42,25 +46,15 @@ export const gigOperations = () => {
           msg.from.username,
           msg.from.first_name
         )
-
-        const response = await axios
-          .get(gigDetails.category.banner, {
-            responseType: 'arraybuffer'
-          })
-          .catch(console.log)
-        await bot.sendPhoto(
-          id,
-          response
-            ? Buffer.from(response.data)
-            : 'https://pbs.twimg.com/profile_banners/1323316082397089793/1674081414/1080x360',
-          {
-            caption: talentCaption(gigDetails.talent, gigDetails.category),
-            //sending the inline keyboard only with the last talent
-            reply_markup: {
-              inline_keyboard: gigOperationsButtons
-            }
+        console.log('categoryId: ' + categoryId)
+        const photoData = await fetchImageFromURL(gigDetails.category.banner)
+        await bot.sendPhoto(id, Buffer.from(photoData), {
+          caption: talentCaption(gigDetails.talent, gigDetails.category),
+          //sending the inline keyboard only with the last talent
+          reply_markup: {
+            inline_keyboard: gigOperationsButtons
           }
-        )
+        })
         categoryIdToBeChanged = categoryId
       }
       //updatng the description

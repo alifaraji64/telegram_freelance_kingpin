@@ -1,6 +1,7 @@
 import { bot } from '../../../index.js'
 import { registeringTalents } from '../../globals.js'
 import { myGigs } from '../freelancer/db.js'
+import { ticketHandle } from '../freelancer/ticket_handle.js'
 export const menuHandle = () => {
   bot.onText(/\/my_gigs/, async msg => {
     console.log('mygigs')
@@ -15,7 +16,7 @@ export const menuHandle = () => {
               inline_keyboard: mygigs.categories.map(category => [
                 {
                   text: category.description,
-                  callback_data: 'gig/display/'+category._id
+                  callback_data: 'gig/display/' + category._id
                 }
               ])
             }
@@ -38,5 +39,9 @@ export const menuHandle = () => {
         reply_markup: { inline_keyboard: registeringTalents }
       }
     )
+  })
+
+  bot.onText(/\/create_ticket/, async msg => {
+    await ticketHandle(msg).catch(console.log)
   })
 }
