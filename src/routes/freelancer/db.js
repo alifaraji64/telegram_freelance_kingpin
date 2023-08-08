@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import { Category } from '../../models/Category.js'
 import { Talent } from '../../models/Talent.js'
+import { Ticket } from '../../models/Ticket.js'
+import { bot } from '../../../index.js'
 export const saveTalentToDB = async (msg, talent_details) => {
   if (
     !talent_details.category_name ||
@@ -36,12 +38,26 @@ export const saveTalentToDB = async (msg, talent_details) => {
   })
     .save()
     .then(() => console.log('saved'))
-    .catch(console.log)
+    .catch(error => {
+      return bot.sendMessage(
+        userId,
+        'an unknown error occured while getting your gig'
+      )
+    })
 }
-export const myGigs = async id =>
-  await Talent.findOne({ userId: id })
-    .select('categories.description')
-    .select('categories._id')
+export const myGigs = async id => {
+  try {
+    await Talent.findOne({ userId: id })
+      .select('categories.description')
+      .select('categories._id')
+  } catch (error) {
+    console.log(error)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while getting your gigs'
+    )
+  }
+}
 
 export const getGigDetails = async (
   categoryId,
@@ -71,6 +87,10 @@ export const getGigDetails = async (
     return { talent: data, category: categoryData[0] }
   } catch (e) {
     console.log(e)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while getting your gig'
+    )
   }
 }
 
@@ -83,6 +103,10 @@ export const updateDescription = async (userId, categoryId, newDescription) => {
     console.log('updated')
   } catch (e) {
     console.log(e)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while updating the description'
+    )
   }
 }
 
@@ -94,6 +118,10 @@ export const updatePrice = async (userId, categoryId, newPrice) => {
     await talent.save()
   } catch (e) {
     console.log(e)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while updating the price'
+    )
   }
 }
 
@@ -105,6 +133,10 @@ export const updateBanner = async (userId, categoryId, newBanner) => {
     await talent.save()
   } catch (e) {
     console.log(e)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while updating the banner'
+    )
   }
 }
 export const deleteGig = async (userId, categoryId) => {
@@ -117,5 +149,22 @@ export const deleteGig = async (userId, categoryId) => {
     await talent.save()
   } catch (e) {
     console.log(e)
+    return bot.sendMessage(
+      userId,
+      'an unknown error occured while deleting the gig'
+    )
+  }
+}
+
+export const createTicket = async (price, to, from) => {
+  const newTicket = new Ticket({ price, to, from })
+  try {
+    await newTicket.save()
+  } catch (error) {
+    console.log(error)
+    return bot.sendMessage(
+      from,
+      'an unknown error occured while saving the ticket'
+    )
   }
 }

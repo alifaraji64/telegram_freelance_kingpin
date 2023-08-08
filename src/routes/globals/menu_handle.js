@@ -1,5 +1,6 @@
 import { bot } from '../../../index.js'
 import { registeringTalents } from '../../globals.js'
+import { ticketHandleCustomer } from '../customer/ticket_handle_customer.js'
 import { myGigs } from '../freelancer/db.js'
 import { ticketHandle } from '../freelancer/ticket_handle.js'
 export const menuHandle = () => {
@@ -44,4 +45,8 @@ export const menuHandle = () => {
   bot.onText(/\/create_ticket/, async msg => {
     await ticketHandle(msg).catch(console.log)
   })
+  bot.onText(/\/tickets_created_for_me/, async msg => {
+    await ticketHandleCustomer(msg).catch(console.log)
+  })
+  bot.onText(/\tickets_created_by_me/, async msg=>{})
 }
