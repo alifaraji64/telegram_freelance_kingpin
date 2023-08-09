@@ -1,4 +1,5 @@
 import { Talent } from '../../models/Talent.js'
+import { Ticket } from '../../models/Ticket.js'
 export const getTalents = async (job, LIMIT) => {
   return await Talent.aggregate([
     {
@@ -22,7 +23,7 @@ export const getTalents = async (job, LIMIT) => {
     .limit(LIMIT)
 }
 
-export const loadTalents = async (job,LIMIT, skip) => {
+export const loadTalents = async (job, LIMIT, skip) => {
   return await Talent.aggregate([
     {
       $match: {
@@ -44,4 +45,16 @@ export const loadTalents = async (job,LIMIT, skip) => {
     .sort({ totalRating: -1, 'rating.qty': 1 })
     .skip(skip)
     .limit(LIMIT)
+}
+
+export const loadTickets = async (id, username) => {
+  try {
+    let tickets = await Ticket.find({ to: username })
+    console.log(tickets)
+  } catch (error) {
+    return bot.sendMessage(
+      id,
+      'an unknown error occured while getting your tickets'
+    )
+  }
 }

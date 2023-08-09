@@ -156,12 +156,14 @@ export const deleteGig = async (userId, categoryId) => {
   }
 }
 
-export const createTicket = async (price, to, from) => {
-  const newTicket = new Ticket({ price, to, from })
+export const createTicket = async (price, to, description, from) => {
+  if (!price || !to || !description || !from)
+    return bot.sendMessage(from, 'empty field while saving your ticket')
+  const newTicket = new Ticket({ price, to, description, from })
   try {
-    await newTicket.save()
+    //await newTicket.save()
+    console.log('saving');
   } catch (error) {
-    console.log(error)
     return bot.sendMessage(
       from,
       'an unknown error occured while saving the ticket'

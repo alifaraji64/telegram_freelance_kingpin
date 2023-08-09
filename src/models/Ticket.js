@@ -9,14 +9,14 @@ const ticketSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  from: {
-    type: String,
-    required: true
-  },
   description: {
     type: String,
     required: true,
     maxLength: 100
+  },
+  from: {
+    type: String,
+    required: true
   },
   isPaid: {
     type: Boolean,

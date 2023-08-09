@@ -4,6 +4,7 @@ import { ticketHandleCustomer } from '../customer/ticket_handle_customer.js'
 import { myGigs } from '../freelancer/db.js'
 import { ticketHandle } from '../freelancer/ticket_handle.js'
 export const menuHandle = () => {
+  let alreadyCalled = false
   bot.onText(/\/my_gigs/, async msg => {
     console.log('mygigs')
     let mygigs = await myGigs(msg.from.id)
@@ -43,10 +44,12 @@ export const menuHandle = () => {
   })
 
   bot.onText(/\/create_ticket/, async msg => {
-    await ticketHandle(msg).catch(console.log)
+    ticketHandle(msg, alreadyCalled).then(() => {
+      alreadyCalled = true
+    })
   })
   bot.onText(/\/tickets_created_for_me/, async msg => {
-    await ticketHandleCustomer(msg).catch(console.log)
+    ticketHandleCustomer(msg).catch(console.log)
   })
-  bot.onText(/\tickets_created_by_me/, async msg=>{})
+  bot.onText(/\tickets_created_by_me/, async msg => {})
 }
