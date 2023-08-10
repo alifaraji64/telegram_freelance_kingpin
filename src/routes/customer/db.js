@@ -49,8 +49,8 @@ export const loadTalents = async (job, LIMIT, skip) => {
 
 export const loadTickets = async (id, username) => {
   try {
-    let tickets = await Ticket.find({ to: username })
-    console.log(tickets)
+    let tickets = await Ticket.find({ to: username, isPaid: false })
+    return tickets
   } catch (error) {
     return bot.sendMessage(
       id,

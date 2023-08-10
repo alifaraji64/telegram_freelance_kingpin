@@ -10,14 +10,20 @@ import { menuHandle } from './src/routes/globals/menu_handle.js'
 import { gigOperations } from './src/routes/freelancer/gig_operations.js'
 import { createClient } from '@supabase/supabase-js'
 import { Web3Storage } from 'web3.storage'
+import express from 'express'
+
 dotenv.config()
+export const app = express()
+const PORT = 3000
 export const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 export const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY,
   { auth: { persistSession: false } }
 )
-export const web3Storage = new Web3Storage({ token: process.env.WEB3_STORAGE_TOKEN })
+export const web3Storage = new Web3Storage({
+  token: process.env.WEB3_STORAGE_TOKEN
+})
 const DB = `mongodb+srv://crypto_kingpin:${process.env.MONGO_PASSWORD}@cluster0.ix2llne.mongodb.net/?retryWrites=true&w=majority`
 mongoose.set('strictQuery', false)
 
@@ -34,3 +40,11 @@ mongoose
     gigOperations()
   })
   .catch(error => console.log(error))
+
+app.use(express.json())
+app.get('/webhook', (req, res) => {
+  res.status(200).send('Webhook received successfully.');
+});
+app.listen(PORT, () => {
+  console.log('connected at port ' + PORT)
+})

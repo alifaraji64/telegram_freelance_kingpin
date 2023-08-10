@@ -3,5 +3,12 @@ import { loadTickets } from './db.js'
 export const ticketHandleCustomer = async msg => {
   const { id, username } = msg.from
 
-  await loadTickets(id, '@' + username)
+  let tickets = await loadTickets(id, '@' + username)
+  for (const ticket of tickets) {
+    await bot.sendMessage(
+      id,
+      `${ticket.description}\n\nprice:${ticket.price}`,
+      { reply_markup: { inline_keyboard: {} } }
+    )
+  }
 }

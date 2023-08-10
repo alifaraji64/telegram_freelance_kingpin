@@ -162,11 +162,22 @@ export const createTicket = async (price, to, description, from) => {
   const newTicket = new Ticket({ price, to, description, from })
   try {
     //await newTicket.save()
-    console.log('saving');
+    console.log('saving')
   } catch (error) {
     return bot.sendMessage(
       from,
       'an unknown error occured while saving the ticket'
+    )
+  }
+}
+export const getTickets = async id => {
+  try {
+    let tickets = await Ticket.find({from:id})
+    return tickets;
+  } catch (e) {
+    return bot.sendMessage(
+      id,
+      'an unknown error occured while getting your tickets'
     )
   }
 }
