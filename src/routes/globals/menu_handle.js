@@ -53,7 +53,7 @@ export const menuHandle = () => {
   bot.onText(/\/tickets_created_for_me/, async msg => {
     ticketHandleCustomer(msg, alreadyCalled1).then(()=>{
       alreadyCalled1 = true;
-    })
+    }).catch(console.log)
   })
   bot.onText(/\/tickets_created_by_me/, async msg => {
     getTicketHandle(msg,alreadyCalled2).then(()=>{

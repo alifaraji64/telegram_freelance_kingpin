@@ -11,6 +11,7 @@ import { gigOperations } from './src/routes/freelancer/gig_operations.js'
 import { createClient } from '@supabase/supabase-js'
 import { Web3Storage } from 'web3.storage'
 import express from 'express'
+import { changeIsPaid } from './src/routes/customer/db.js'
 
 dotenv.config()
 export const app = express()
@@ -42,9 +43,15 @@ mongoose
   .catch(error => console.log(error))
 
 app.use(express.json())
-app.get('/webhook', (req, res) => {
-  res.status(200).send('Webhook received successfully.');
-});
+app.get('/payid19', async (req, res) => {
+  console.log('payid 19')
+  const id = req.query.id
+  const ticketId = req.query.ticketId
+  res.send('thanks for the payment')
+  let ticket = await changeIsPaid(id, ticketId);
+  await bot.sendMessage(id, 'your payment was sucessfull ✅')
+  await bot.sendMessage(ticket.from, `${ticket.to} paid for this ticket:\n${ticket.description}`)
+})
 app.listen(PORT, () => {
   console.log('connected at port ' + PORT)
 })

@@ -58,3 +58,14 @@ export const loadTickets = async (id, username) => {
     )
   }
 }
+
+export const changeIsPaid = async (id, ticketId) => {
+  try {
+    return await Ticket.findOneAndUpdate({ _id: ticketId }, { isPaid: true })
+  } catch (error) {
+    return bot.sendMessage(
+      id,
+      'an unknown error occured while getting your tickets'
+    )
+  }
+}
