@@ -25,7 +25,7 @@ export const sendTalents = async (talents, job, id, bot) => {
   if (talents.length == 0) return bot.sendMessage(id, 'no more talents to load')
   for (const [index, talent] of talents.entries()) {
     let category = talent.categories.find(category => category.name == job)
-    const bannerData = await fetchImageFromURL(category.banner);
+    const bannerData = await fetchImageFromURL(category.banner)
     await bot.sendPhoto(id, Buffer.from(bannerData), {
       caption: talentCaption(talent, category),
       //sending the inline keyboard only with the last talent
@@ -67,6 +67,8 @@ export const askForPrice = async chatId => {
     { reply_markup: { force_reply: true } }
   )
 }
+
+export const withdrawThreshold = 10
 
 export const gigOperationsButtons = [
   [

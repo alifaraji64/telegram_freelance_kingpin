@@ -22,7 +22,7 @@ export const ticketHandleCustomer = async msg => {
     })
     await bot.sendMessage(
       id,
-      `${ticket.description}\n\nprice:${ticket.price}`,
+      `${ticket.description}\n\nprice:$${ticket.price}`,
       {
         reply_markup: {
           inline_keyboard: [

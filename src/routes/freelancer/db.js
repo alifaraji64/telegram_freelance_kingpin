@@ -3,6 +3,7 @@ import { Category } from '../../models/Category.js'
 import { Talent } from '../../models/Talent.js'
 import { Ticket } from '../../models/Ticket.js'
 import { bot } from '../../../index.js'
+import { Withdrawal } from '../../models/Withdrawal.js'
 export const saveTalentToDB = async (msg, talent_details) => {
   if (
     !talent_details.category_name ||
@@ -172,12 +173,29 @@ export const createTicket = async (price, to, description, from) => {
 }
 export const getTickets = async id => {
   try {
-    let tickets = await Ticket.find({from:id})
-    return tickets;
+    let tickets = await Ticket.find({ from: id })
+    return tickets
   } catch (e) {
     return bot.sendMessage(
       id,
       'an unknown error occured while getting your tickets'
     )
   }
+}
+
+export const getMyBalance = async id => {
+  const balanceResult = await Ticket.aggregate([
+    { $match: { from: id.toString(), isPaid: true } }, // Match paid tickets for the specific user
+    { $group: { _id: null, totalBalance: { $sum: '$price' } } } // Sum the prices
+  ])
+  if (balanceResult.length > 0) {
+    return balanceResult[0].totalBalance // Get the totalBalance from the aggregation result
+  } else {
+    return 0 // No paid tickets, so balance is 0
+  }
+}
+
+export const saveWithdrawReq = async (amount,address,receiver)=>{
+  let withdrawal = new Withdrawal({amount,address,receiver});
+  await withdrawal.save();
 }

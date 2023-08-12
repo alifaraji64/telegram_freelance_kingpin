@@ -2,11 +2,15 @@ import { bot } from '../../../index.js'
 import { registeringTalents } from '../../globals.js'
 import { ticketHandleCustomer } from '../customer/ticket_handle_customer.js'
 import { myGigs } from '../freelancer/db.js'
-import { createTicketHandle, getTicketHandle } from '../freelancer/ticket_handle.js'
+import {
+  createTicketHandle,
+  getTicketHandle,
+  myBalanceHandle
+} from '../freelancer/ticket_handle.js'
 export const menuHandle = () => {
   let alreadyCalled0 = false
-  let alreadyCalled1 = false;
-  let alreadyCalled2 = false;
+  let alreadyCalled1 = false
+  let alreadyCalled2 = false
   bot.onText(/\/my_gigs/, async msg => {
     console.log('mygigs')
     let mygigs = await myGigs(msg.from.id)
@@ -51,13 +55,18 @@ export const menuHandle = () => {
     })
   })
   bot.onText(/\/tickets_created_for_me/, async msg => {
-    ticketHandleCustomer(msg, alreadyCalled1).then(()=>{
-      alreadyCalled1 = true;
-    }).catch(console.log)
+    ticketHandleCustomer(msg, alreadyCalled1)
+      .then(() => {
+        alreadyCalled1 = true
+      })
+      .catch(console.log)
   })
   bot.onText(/\/tickets_created_by_me/, async msg => {
-    getTicketHandle(msg,alreadyCalled2).then(()=>{
-      alreadyCalled2 = true;
+    getTicketHandle(msg, alreadyCalled2).then(() => {
+      alreadyCalled2 = true
     })
+  })
+  bot.onText(/\/my_balance/, async msg => {
+    await myBalanceHandle(msg)
   })
 }

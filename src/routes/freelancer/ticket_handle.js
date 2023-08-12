@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { bot } from '../../../index.js'
 import tgresolve from 'tg-resolve'
-import { createTicket, getTickets } from './db.js'
-const checkTheReply = (msg, replyText, errorText) => {
+import { createTicket, getMyBalance, getTickets, saveWithdrawReq } from './db.js'
+import { withdrawThreshold } from '../../globals.js'
+const checkTheReply = (msg, replyText, errorText='') => {
   let repltRegex = new RegExp(replyText)
   let errorRegex = new RegExp(errorText)
   let isValidReply =
@@ -127,10 +128,80 @@ export const getTicketHandle = async (msg, alreadyCalled) => {
             `to: ${to}\n\n${
               isPaid == 'true'
                 ? 'your client paid for this ticket✔️'
-                : 'client hasn\'t paid for this ticket yet❌'
+                : "client hasn't paid for this ticket yet❌"
             }`
           )
         }
       })
     : null
+}
+
+export const myBalanceHandle = async msg => {
+  const id = msg.from.id
+  try {
+    let balance = await getMyBalance(id)
+    await bot.sendMessage(
+      id,
+      `your balance is: $${balance}${
+        balance >= withdrawThreshold
+          ? ''
+          : '\n\n the minimun amount for a withdrawal is 10$'
+      }`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            balance >= withdrawThreshold
+              ? [
+                  {
+                    text: 'withdraw your balance',
+                    callback_data: 'withdraw/' + balance
+                  }
+                ]
+              : []
+          ]
+        }
+      }
+    )
+  } catch (error) {
+    console.log(error)
+    return bot.sendMessage(
+      id,
+      'an unknown error occured while getting your balance'
+    )
+  }
+
+  bot.on('callback_query', async msg => {
+    const id = msg.from.id
+    if (msg.data.split('/')[0] == 'withdraw') {
+      const balance = msg.data.split('/')[1]
+      await bot.sendMessage(
+        id,
+        'send your USDT TRC-20 address\n\nthe withdrawals only happen on TRON network(TRC-20)',
+        { reply_markup: { force_reply: true } }
+      )
+    }
+  })
+
+  bot.on('message', async msg=>{
+    const id = msg.from.id;
+    if (
+          checkTheReply(
+            msg,
+            'send your USDT'
+          )
+        ){
+          const amount = 100;
+          const address = msg.text;
+          const receiver = id;
+          try {
+            await saveWithdrawReq(amount,address,receiver);
+            await bot.sendMessage(id, 'your withdrawal request has been submitted\n\nwe will send the amount shortly to your address')
+          } catch (error) {
+            return bot.sendMessage(
+              id,
+              'an unknown error occured while saving the withdrawal request'
+            )
+          }
+        }
+  })
 }

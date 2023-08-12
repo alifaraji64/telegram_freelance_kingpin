@@ -44,13 +44,22 @@ mongoose
 
 app.use(express.json())
 app.get('/payid19', async (req, res) => {
-  console.log('payid 19')
   const id = req.query.id
   const ticketId = req.query.ticketId
   res.send('thanks for the payment')
-  let ticket = await changeIsPaid(id, ticketId);
-  await bot.sendMessage(id, 'your payment was sucessfull ✅')
-  await bot.sendMessage(ticket.from, `${ticket.to} paid for this ticket:\n${ticket.description}`)
+  try {
+    let ticket = await changeIsPaid(id, ticketId)
+    await bot.sendMessage(id, 'your payment was sucessfull ✅')
+    await bot.sendMessage(
+      ticket.from,
+      `${ticket.to} paid for this ticket:\n${ticket.description}`
+    )
+  } catch (error) {
+    return bot.sendMessage(
+      id,
+      'an unknown error occured while getting your tickets'
+    )
+  }
 })
 app.listen(PORT, () => {
   console.log('connected at port ' + PORT)
