@@ -1,9 +1,17 @@
 import axios from 'axios'
 import { bot } from '../../../index.js'
 import tgresolve from 'tg-resolve'
-import { createTicket, getMyBalance, getTickets, saveWithdrawReq } from './db.js'
-import { withdrawThreshold } from '../../globals.js'
-const checkTheReply = (msg, replyText, errorText='') => {
+import {
+  createTicket,
+  getMyBalance,
+  getTickets,
+  resetBalance,
+  saveWithdrawReq
+} from './db.js'
+import { channelId, withdrawThreshold } from '../../globals.js'
+import { withdrawalPaidOut } from '../admin/db.js'
+import { adminPaidOut } from '../admin/payout.js'
+const checkTheReply = (msg, replyText, errorText = '') => {
   let repltRegex = new RegExp(replyText)
   let errorRegex = new RegExp(errorText)
   let isValidReply =
@@ -83,16 +91,20 @@ export const createTicketHandle = async (msg, alreadyCalled) => {
             )
           ticket.description = description
           console.log(ticket)
-          createTicket(ticket.price, ticket.to, ticket.description, id).then(
-            () => {
-              bot.sendMessage(
-                id,
-                `you succesfully created a ticket for ${ticket.to} \n\nonce they paid the specified amount you'll be notified\n\nalso you can get the status of your tickets by clicking the /tickets_created_by_me in the menu`
-              )
-            }
-          )
+
+          try {
+            await createTicket(ticket.price, ticket.to, ticket.description, id)
+            bot.sendMessage(
+              id,
+              `you succesfully created a ticket for ${ticket.to} \n\nonce they paid the specified amount you'll be notified\n\nalso you can get the status of your tickets by clicking the /tickets_created_by_me in the menu`
+            )
+          } catch (error) {
+            return bot.sendMessage(
+              from,
+              'an unknown error occured while saving the ticket'
+            )
+          }
         }
-        return
       })
     : null
   alreadyCalled = true
@@ -136,7 +148,7 @@ export const getTicketHandle = async (msg, alreadyCalled) => {
     : null
 }
 
-export const myBalanceHandle = async msg => {
+export const myBalanceHandle = async (msg, alreadyCalled) => {
   const id = msg.from.id
   try {
     let balance = await getMyBalance(id)
@@ -170,38 +182,62 @@ export const myBalanceHandle = async msg => {
     )
   }
 
-  bot.on('callback_query', async msg => {
-    const id = msg.from.id
-    if (msg.data.split('/')[0] == 'withdraw') {
-      const balance = msg.data.split('/')[1]
-      await bot.sendMessage(
-        id,
-        'send your USDT TRC-20 address\n\nthe withdrawals only happen on TRON network(TRC-20)',
-        { reply_markup: { force_reply: true } }
-      )
-    }
-  })
-
-  bot.on('message', async msg=>{
-    const id = msg.from.id;
-    if (
-          checkTheReply(
-            msg,
-            'send your USDT'
+  !alreadyCalled
+    ? bot.on('callback_query', async msg => {
+        const id = msg.from.id
+        if (msg.data.split('/')[0] == 'withdraw') {
+          if (msg.data.split('/')[1] == 'paid_out') {
+            await adminPaidOut(msg)
+            return;
+          }
+          const balance = msg.data.split('/')[1]
+          await bot.sendMessage(
+            id,
+            'send your USDT TRC-20 address\n\nthe withdrawals only happen on TRON network(TRC-20)',
+            { reply_markup: { force_reply: true } }
           )
-        ){
-          const amount = 100;
-          const address = msg.text;
-          const receiver = id;
+        }
+      })
+    : null
+
+  !alreadyCalled
+    ? bot.on('message', async msg => {
+        const id = msg.from.id
+        if (checkTheReply(msg, 'send your USDT')) {
+          const amount = await getMyBalance(id)
+          const address = msg.text
+          const receiver = id
           try {
-            await saveWithdrawReq(amount,address,receiver);
-            await bot.sendMessage(id, 'your withdrawal request has been submitted\n\nwe will send the amount shortly to your address')
+            let withdrawal = await saveWithdrawReq(amount, address, receiver)
+            await resetBalance(id);
+            await bot.sendMessage(
+              channelId,
+              `withdrawal request\n\namount: $${amount}\n\naddress: ${address}`,
+              {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: 'paid out',
+                        callback_data: 'withdraw/paid_out/' + withdrawal._id
+                      }
+                    ]
+                  ]
+                }
+              }
+            )
+            await bot.sendMessage(
+              id,
+              'your withdrawal request has been submitted\n\nwe will send the amount shortly to your address'
+            )
           } catch (error) {
+            console.log(error)
             return bot.sendMessage(
               id,
               'an unknown error occured while saving the withdrawal request'
             )
           }
         }
-  })
+      })
+    : null
 }

@@ -27,6 +27,11 @@ const talentSchema = mongoose.Schema({
       default: 0
     }
   },
-  categories: [categorySchema]
+  categories: [categorySchema],
+  balance: {
+    type: Number,
+    required: true,
+    default: 0
+  }
 })
 export const Talent = mongoose.model('Talent', talentSchema)

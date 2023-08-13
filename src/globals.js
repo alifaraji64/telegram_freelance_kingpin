@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { bot } from '../index.js'
 import { Talent } from './models/Talent.js'
+
+export const channelId = -1001947838378
 export const talentCaption = (talent, category) => `
 ${talent.firstname} \n${category.description}\n🆔 @${
   talent.username

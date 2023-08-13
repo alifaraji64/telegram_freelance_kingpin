@@ -12,6 +12,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Web3Storage } from 'web3.storage'
 import express from 'express'
 import { changeIsPaid } from './src/routes/customer/db.js'
+import { updateBalance } from './src/routes/freelancer/db.js'
 
 dotenv.config()
 export const app = express()
@@ -46,18 +47,21 @@ app.use(express.json())
 app.get('/payid19', async (req, res) => {
   const id = req.query.id
   const ticketId = req.query.ticketId
+  const amount = req.query.amount;
   res.send('thanks for the payment')
   try {
     let ticket = await changeIsPaid(id, ticketId)
+    await updateBalance(amount,ticket.from);
     await bot.sendMessage(id, 'your payment was sucessfull ✅')
     await bot.sendMessage(
       ticket.from,
       `${ticket.to} paid for this ticket:\n${ticket.description}`
     )
   } catch (error) {
+    console.log(error);
     return bot.sendMessage(
       id,
-      'an unknown error occured while getting your tickets'
+      'an unknown error occured after payment'
     )
   }
 })

@@ -47,17 +47,9 @@ export const saveTalentToDB = async (msg, talent_details) => {
     })
 }
 export const myGigs = async id => {
-  try {
-    await Talent.findOne({ userId: id })
-      .select('categories.description')
-      .select('categories._id')
-  } catch (error) {
-    console.log(error)
-    return bot.sendMessage(
-      userId,
-      'an unknown error occured while getting your gigs'
-    )
-  }
+  return await Talent.findOne({ userId: id })
+    .select('categories.description')
+    .select('categories._id')
 }
 
 export const getGigDetails = async (
@@ -161,15 +153,7 @@ export const createTicket = async (price, to, description, from) => {
   if (!price || !to || !description || !from)
     return bot.sendMessage(from, 'empty field while saving your ticket')
   const newTicket = new Ticket({ price, to, description, from })
-  try {
-    //await newTicket.save()
-    console.log('saving')
-  } catch (error) {
-    return bot.sendMessage(
-      from,
-      'an unknown error occured while saving the ticket'
-    )
-  }
+  await newTicket.save()
 }
 export const getTickets = async id => {
   try {
@@ -184,18 +168,19 @@ export const getTickets = async id => {
 }
 
 export const getMyBalance = async id => {
-  const balanceResult = await Ticket.aggregate([
-    { $match: { from: id.toString(), isPaid: true } }, // Match paid tickets for the specific user
-    { $group: { _id: null, totalBalance: { $sum: '$price' } } } // Sum the prices
-  ])
-  if (balanceResult.length > 0) {
-    return balanceResult[0].totalBalance // Get the totalBalance from the aggregation result
-  } else {
-    return 0 // No paid tickets, so balance is 0
-  }
+  let obj = await Talent.findOne({ userId: id }).select('balance')
+  return obj.balance
 }
 
-export const saveWithdrawReq = async (amount,address,receiver)=>{
-  let withdrawal = new Withdrawal({amount,address,receiver});
-  await withdrawal.save();
+export const saveWithdrawReq = async (amount, address, receiver) => {
+  let withdrawal = new Withdrawal({ amount, address, receiver })
+  return await withdrawal.save()
+}
+
+export const updateBalance = async (balance, id) => {
+  await Talent.findOneAndUpdate({ userId: id }, { $inc: { balance } })
+}
+
+export const resetBalance = async id => {
+  await Talent.findOneAndUpdate({ userId: id }, { balance: 0 })
 }
