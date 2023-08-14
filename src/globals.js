@@ -4,7 +4,7 @@ import { Talent } from './models/Talent.js'
 
 export const channelId = -1001947838378
 export const talentCaption = (talent, category) => `
-${talent.firstname} \n${category.description}\n🆔 @${
+${talent.firstname} \n\n${category.description}\n\n🆔 @${
   talent.username
 } \n💰starting price: $${category.price} \n ⭐rating: ${
   talent.rating.total == 0

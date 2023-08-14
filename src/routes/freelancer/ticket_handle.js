@@ -188,7 +188,7 @@ export const myBalanceHandle = async (msg, alreadyCalled) => {
         if (msg.data.split('/')[0] == 'withdraw') {
           if (msg.data.split('/')[1] == 'paid_out') {
             await adminPaidOut(msg)
-            return;
+            return
           }
           const balance = msg.data.split('/')[1]
           await bot.sendMessage(
@@ -203,13 +203,15 @@ export const myBalanceHandle = async (msg, alreadyCalled) => {
   !alreadyCalled
     ? bot.on('message', async msg => {
         const id = msg.from.id
-        if (checkTheReply(msg, 'send your USDT')) {
+        if (/send your USDT/.test(msg.reply_to_message.text)) {
+          console.log(checkTheReply(msg, 'send your USDT'))
+          console.log('test')
           const amount = await getMyBalance(id)
           const address = msg.text
           const receiver = id
           try {
             let withdrawal = await saveWithdrawReq(amount, address, receiver)
-            await resetBalance(id);
+            await resetBalance(id)
             await bot.sendMessage(
               channelId,
               `withdrawal request\n\namount: $${amount}\n\naddress: ${address}`,

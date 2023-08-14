@@ -1,9 +1,11 @@
-import { bot } from "../../../index.js"
-import { withdrawalPaidOut } from "./db.js"
+import { bot } from '../../../index.js'
+import { withdrawalPaidOut } from './db.js'
 export const adminPaidOut = async msg => {
   const withdrawalId = msg.data.split('/')[2]
   try {
     let withdrawal = await withdrawalPaidOut(withdrawalId)
+    //deleting the paid out message from the channel
+    await bot.deleteMessage(msg.message.chat.id, msg.message.message_id)
     const receiver = withdrawal.receiver
     await bot.sendMessage(
       receiver,
