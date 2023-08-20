@@ -12,6 +12,18 @@ ${talent.firstname} \n\n${category.description}\n\n🆔 @${
     : talent.rating.total / talent.rating.qty + '/5'
 }`
 
+export const talentText = `thanks for choosing Gigpin\n\n
+we know without the developers and freelancers we couldn't make it this far\n\n
+please make sure to read the FAQ section as well for further information about gigpin\n\n
+here is how gigpin works for freelancers in a nutshell:\n\n
+1- you create your gig(s) and we'll recommend you to the clients based on your ratings\n\n
+2- we will give all our new freelancers a fair chance, even if you don't have any ratings, you won't be ghosted\n\n
+3- the client will reach out to you by your username in private messages\n\n
+4- it is very important to keep your username when you created a gig\n\n
+5- after talking about the details of the project with your client you can create a ticket for them\n\n
+6- when your client pays the ticket, you'll be notified\n\n
+7- when the client agrees that the project is completed, you can withdraw your money\n\n`
+
 export const fetchImageFromURL = async url => {
   console.log(url)
   try {

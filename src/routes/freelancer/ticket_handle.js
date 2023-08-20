@@ -152,17 +152,18 @@ export const myBalanceHandle = async (msg, alreadyCalled) => {
   const id = msg.from.id
   try {
     let balance = await getMyBalance(id)
+    const condition = (balance >= withdrawThreshold)
     await bot.sendMessage(
       id,
       `your balance is: $${balance}${
-        balance >= withdrawThreshold
+        condition
           ? ''
           : '\n\n the minimun amount for a withdrawal is 10$'
       }`,
       {
         reply_markup: {
           inline_keyboard: [
-            balance >= withdrawThreshold
+            condition
               ? [
                   {
                     text: 'withdraw your balance',
