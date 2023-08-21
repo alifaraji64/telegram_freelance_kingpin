@@ -1,0 +1,26 @@
+`thanks for choosing Gigpin\n
+we know without the developers and freelancers we couldn't make it this far\n
+please make sure to read the FAQ section as well for further information about gigpin\n
+here is how gigpin works for freelancers in a nutshell:\n
+1- you create your gig(s) and we'll recommend you to the clients based on your ratings\n
+2- we will give all our new freelancers a fair chance, even if you don't have any ratings, you won't be ghosted\n
+3- the client will reach out to you by your username in private messages\n
+4- it is very important to keep your username when you created a gig\n
+5- after talking about the details of the project with your client you can create a ticket for them\n
+6- when your client pays the ticket, you'll be notified\n
+7- when the client agrees that the project is completed, you can withdraw your money\n
+8- withdrawing money is only available through crypto (USDT TRON network)\n
+9- our team will process the withdrawal request and send the amount to your address\n`
+
+`1) what is Gigpin?\n
+Gigpin is a freelancing platform that aims to connect people looking to get projects done with skilled individuals who can provide those services\n
+2) why should I choose Gigpin over other freelancing platforms?\n
+in a nutshell, to save/make more money and do it as fast and as easy as possible\n
+3) how Gigpin is more budget-friendly than other platforms?\n
+With just a 7% fee, our platform empowers you to keep more of what you earn. this number for most platforms is above 20%\n
+4) other than low fees is there any other benefit to using Gigpin?\n
+Gigpin is a telegram bot, which means joining the platform is as easy as clicking the start button, with no registration, and no email confirmation. also, all the payments and withdrawals in Gigpin are done with crypto, to make everything as accessible and as easy as possible.\n
+5) how can I make sure the freelancer is going to deliver my project after the payment?\n
+the freelancer gets the paid amount when you agree that the project is completed. until your confirmation, we keep the money\n
+6) what happens if I deliver the project but the buyer doesn't mark it as completed?\n
+if such a conflict happens that the freelancer claims the project is done but the buyer disagrees, we will handle the conflict after talking to both sides\n`
