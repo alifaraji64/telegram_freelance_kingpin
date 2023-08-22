@@ -12,7 +12,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Web3Storage } from 'web3.storage'
 import express from 'express'
 import { changeIsPaid } from './src/routes/customer/db.js'
-import { updateBalance } from './src/routes/freelancer/db.js'
+import { updateUnconfirmedBalance } from './src/routes/freelancer/db.js'
 
 dotenv.config()
 export const app = express()
@@ -51,7 +51,7 @@ app.get('/payid19', async (req, res) => {
   res.send('thanks for the payment')
   try {
     let ticket = await changeIsPaid(id, ticketId)
-    await updateBalance(amount,ticket.from);
+    await updateUnconfirmedBalance(amount,ticket.from);
     await bot.sendMessage(id, 'your payment was sucessfull ✅')
     await bot.sendMessage(
       ticket.from,

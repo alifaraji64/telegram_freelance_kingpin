@@ -1,15 +1,36 @@
 import axios from 'axios'
 import { bot } from '../../../index.js'
-import { loadTickets } from './db.js'
-export const ticketHandleCustomer = async msg => {
+import { changeIsCompleted, changeUnconfirmedBalance, loadTickets } from './db.js'
+export const ticketHandleCustomer = async (msg, alreadyCalled) => {
   const { id, username } = msg.from
+  !alreadyCalled
+    ? bot.on('callback_query', async msg => {
+        if (msg.data.split('/')[0] == 'complete_ticket') {
+          //changing the isCompleted field
+          const ticketId = msg.data.split('/')[1]
+          const ticketPrice = msg.data.split('/')[2]
+          const ticketCreator = msg.data.split('/')[3]
+          try {
+            await changeIsCompleted(ticketId)
+            await changeUnconfirmedBalance(ticketCreator,ticketPrice);
+            await bot.sendMessage(id,'done✔️')
+          } catch (error) {
+            console.log(error)
+            return bot.sendMessage(
+              id,
+              'an unknown error occured while marking the ticket as completed'
+            )
+          }
+        }
+      })
+    : null
 
   try {
     let tickets = await loadTickets(id, '@' + username)
     if (tickets.length == 0)
       return await bot.sendMessage(id, 'no ticket has been created for you')
     for (const ticket of tickets) {
-      let response = await axios({
+      let response = !ticket.isPaid && await axios({
         method: 'post',
         url: 'https://payid19.com/api/v1/create_invoice',
         data: {
@@ -23,17 +44,30 @@ export const ticketHandleCustomer = async msg => {
       })
       await bot.sendMessage(
         id,
-        `${ticket.description}\n\nprice:$${ticket.price}`,
+        `${ticket.description}\n\nprice:$${ticket.price}${
+          ticket.isPaid ? "\n\nyou've paid for this ticket✔️" : ''
+        }${ticket.isCompleted ? '\n\nthis project is completed✔️' : ''}`,
         {
           reply_markup: {
             inline_keyboard: [
-              [{ text: 'pay for this ticket', url: response.data.message }]
+              !ticket.isPaid
+                ? [{ text: 'pay for this ticket', url: response.data.message }]
+                : [],
+              !ticket.isCompleted && ticket.isPaid
+                ? [
+                    {
+                      text: 'mark this project as completed',
+                      callback_data: `complete_ticket/${ticket._id}/${ticket.price}/${ticket.from}`
+                    }
+                  ]
+                : []
             ]
           }
         }
       )
     }
   } catch (error) {
+    console.log(error)
     return bot.sendMessage(
       id,
       'an unknown error occured while getting your tickets'

@@ -22,7 +22,8 @@ const ticketSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
-  }
+  },
+  isCompleted: { type: Boolean, required: true, default: false }
 })
 
 export const Ticket = mongoose.model('Ticket', ticketSchema)

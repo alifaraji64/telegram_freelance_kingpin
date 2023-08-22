@@ -121,7 +121,7 @@ export const getTicketHandle = async (msg, alreadyCalled) => {
         return [
           {
             text: ticket.description,
-            callback_data: `ticket/${ticket.id}/${ticket.to}/${ticket.isPaid}`
+            callback_data: `ticket/${ticket.id}/${ticket.to}/${ticket.isPaid}/${ticket.isCompleted}`
           }
         ]
       })
@@ -134,13 +134,18 @@ export const getTicketHandle = async (msg, alreadyCalled) => {
           const tikcetId = data[1]
           const to = data[2]
           const isPaid = data[3]
+          const isCompleted = data[4]
           console.log(data[3])
           await bot.sendMessage(
             id,
             `to: ${to}\n\n${
               isPaid == 'true'
-                ? 'your client paid for this ticket✔️'
+                ? "your client paid for this ticket✔️"
                 : "client hasn't paid for this ticket yet❌"
+            }\n\n${
+              isCompleted == 'true'
+                ? "client agreed this project is completed✔️"
+                : "client hasn't agreed for the completion of the project❌"
             }`
           )
         }
@@ -152,13 +157,14 @@ export const myBalanceHandle = async (msg, alreadyCalled) => {
   const id = msg.from.id
   try {
     let balance = await getMyBalance(id)
-    const condition = (balance >= withdrawThreshold)
+    if(!balance){
+      return bot.sendMessage(id, 'only talents can check their balance')
+    }
+    const condition = balance >= withdrawThreshold
     await bot.sendMessage(
       id,
       `your balance is: $${balance}${
-        condition
-          ? ''
-          : '\n\n the minimun amount for a withdrawal is 10$'
+        condition ? '' : '\n\n the minimun amount for a withdrawal is 10$'
       }`,
       {
         reply_markup: {
@@ -188,6 +194,7 @@ export const myBalanceHandle = async (msg, alreadyCalled) => {
         const id = msg.from.id
         if (msg.data.split('/')[0] == 'withdraw') {
           if (msg.data.split('/')[1] == 'paid_out') {
+            console.log('fsdf');
             await adminPaidOut(msg)
             return
           }

@@ -32,6 +32,12 @@ const talentSchema = mongoose.Schema({
     type: Number,
     required: true,
     default: 0
+  },
+  //the balance that is paid by the client but the project is not complete yet
+  unconfirmedBalance:{
+    type: Number,
+    required: true,
+    default: 0
   }
 })
 export const Talent = mongoose.model('Talent', talentSchema)

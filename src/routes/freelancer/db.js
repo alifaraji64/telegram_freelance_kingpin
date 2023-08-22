@@ -169,7 +169,7 @@ export const getTickets = async id => {
 
 export const getMyBalance = async id => {
   let obj = await Talent.findOne({ userId: id }).select('balance')
-  return obj.balance
+  return obj ? obj.balance : false
 }
 
 export const saveWithdrawReq = async (amount, address, receiver) => {
@@ -177,8 +177,11 @@ export const saveWithdrawReq = async (amount, address, receiver) => {
   return await withdrawal.save()
 }
 
-export const updateBalance = async (balance, id) => {
-  await Talent.findOneAndUpdate({ userId: id }, { $inc: { balance } })
+export const updateUnconfirmedBalance = async (balance, id) => {
+  await Talent.findOneAndUpdate(
+    { userId: id },
+    { $inc: { unconfirmedBalance: balance } }
+  )
 }
 
 export const resetBalance = async id => {

@@ -48,8 +48,21 @@ export const loadTalents = async (job, LIMIT, skip) => {
 }
 
 export const loadTickets = async (id, username) => {
-  return await Ticket.find({ to: username, isPaid: false })
+  return await Ticket.find({ to: username })
 }
 
 export const changeIsPaid = async (id, ticketId) =>
   await Ticket.findOneAndUpdate({ _id: ticketId }, { isPaid: true })
+
+export const changeIsCompleted = async ticketId => {
+  await Ticket.findOneAndUpdate({ _id: ticketId }, { isCompleted: true })
+}
+
+export const changeUnconfirmedBalance = async (ticketCreator, ticketPrice) => {
+  await Talent.findOneAndUpdate(
+    { userId: ticketCreator },
+    {
+      $inc: { balance: ticketPrice, unconfirmedBalance: -ticketPrice }
+    }
+  )
+}
