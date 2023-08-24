@@ -8,18 +8,9 @@ import {
   resetBalance,
   saveWithdrawReq
 } from './db.js'
-import { channelId, withdrawThreshold } from '../../globals.js'
+import { channelId, checkTheReply, withdrawThreshold } from '../../globals.js'
 import { withdrawalPaidOut } from '../admin/db.js'
 import { adminPaidOut } from '../admin/payout.js'
-const checkTheReply = (msg, replyText, errorText = '') => {
-  let repltRegex = new RegExp(replyText)
-  let errorRegex = new RegExp(errorText)
-  let isValidReply =
-    msg.reply_to_message &&
-    (repltRegex.test(msg.reply_to_message.text) ||
-      errorRegex.test(msg.reply_to_message.text))
-  return isValidReply
-}
 export const createTicketHandle = async (msg, alreadyCalled) => {
   let ticket = { price: '', to: '', description: '' }
   const id = msg.from.id

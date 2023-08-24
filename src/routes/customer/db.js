@@ -66,3 +66,10 @@ export const changeUnconfirmedBalance = async (ticketCreator, ticketPrice) => {
     }
   )
 }
+
+export const updateRating = async (talentId, rating) => {
+  await Talent.findOneAndUpdate(
+    { userId: talentId },
+    { $inc: { 'rating.qty': 1, 'rating.total': rating } }
+  )
+}

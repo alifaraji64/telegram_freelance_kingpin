@@ -295,3 +295,12 @@ export const talents = [
     ]
   })
 ]
+export const checkTheReply = (msg, replyText, errorText = '') => {
+  let repltRegex = new RegExp(replyText)
+  let errorRegex = new RegExp(errorText)
+  let isValidReply =
+    msg.reply_to_message &&
+    (repltRegex.test(msg.reply_to_message.text) ||
+      errorRegex.test(msg.reply_to_message.text))
+  return isValidReply
+}

@@ -23,4 +23,6 @@ Gigpin is a telegram bot, which means joining the platform is as easy as clickin
 5) how can I make sure the freelancer is going to deliver my project after the payment?\n
 the freelancer gets the paid amount when you agree that the project is completed. until your confirmation, we keep the money\n
 6) what happens if I deliver the project but the buyer doesn't mark it as completed?\n
-if such a conflict happens that the freelancer claims the project is done but the buyer disagrees, we will handle the conflict after talking to both sides\n`
+if such a conflict happens that the freelancer claims the project is done but the buyer disagrees, we will handle the conflict after talking to both sides\n
+7) which coins/tokens can I use for payments?\n
+unlike withdrawals, you have a lot of options for payment, such as BTC, BNB, ETH, ETC.\n`
